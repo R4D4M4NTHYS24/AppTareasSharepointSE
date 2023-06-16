@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "app-tareas-sharepoint-client-side-solution",
+    "id": "7336905f-beb4-4cdb-8d57-add75a54c420",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.17.2"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "app-tareas-sharepoint description"
+      },
+      "longDescription": {
+        "default": "app-tareas-sharepoint description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "app-tareas-sharepoint Feature",
+        "description": "The feature that activates elements of the app-tareas-sharepoint solution.",
+        "id": "f9029102-ba81-45e8-8ef2-9bf924179427",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/app-tareas-sharepoint.sppkg"
+  }
+}

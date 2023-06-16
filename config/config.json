@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "app-tareas-sharepoint-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/appTareasSharepoint/AppTareasSharepointWebPart.js",
+          "manifest": "./src/webparts/appTareasSharepoint/AppTareasSharepointWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "AppTareasSharepointWebPartStrings": "lib/webparts/appTareasSharepoint/loc/{locale}.js"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "14.17.0",
+    "sdksVersions": {
+      "@microsoft/microsoft-graph-client": "3.0.2",
+      "@microsoft/teams-js": "2.9.1"
+    },
+    "version": "1.17.2",
+    "libraryName": "app-tareas-sharepoint",
+    "libraryId": "7336905f-beb4-4cdb-8d57-add75a54c420",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "app-tareas-sharepoint",
+    "solutionShortDescription": "app-tareas-sharepoint description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}

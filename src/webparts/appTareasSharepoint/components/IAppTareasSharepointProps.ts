@@ -1,5 +1,6 @@
+import { ITarea } from "./AppTareasSharepoint";
+
 export interface IAppTareasSharepointProps {
-  titulo: string;
-  descripcion: string;
-  fecha: string;
+  tareaList: ITarea[];
+  handleDelete: (taskId: number) => Promise<void>;
 }

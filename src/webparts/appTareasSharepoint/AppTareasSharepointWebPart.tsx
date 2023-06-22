@@ -64,10 +64,10 @@ export default class AppTareasSharepointWebPart extends BaseClientSideWebPart<IA
     }
   }
 
-  private async deleteTarea(codigo: number): Promise<void> {
+  private async deleteTarea(taskId: number): Promise<void> {
     try {
       const digest = await this.getRequestDigest();
-      const apiUrl = `https://secol.sharepoint.com/sites/AppTareasSharepoint/_api/web/lists/getbytitle('Tarea')/items?$filter=Codigo eq '${codigo}'`;
+      const apiUrl = `https://secol.sharepoint.com/sites/AppTareasSharepoint/_api/web/lists/getbytitle('Tarea')/items?$filter=Id eq '${taskId}'`;
 
       const response = await fetch(apiUrl, {
         method: "GET",
@@ -108,8 +108,8 @@ export default class AppTareasSharepointWebPart extends BaseClientSideWebPart<IA
   private async renderComponent(): Promise<void> {
     const tareaList = await this.loadTareasData();
 
-    const handleDelete = async (codigo: number): Promise<void> => {
-      await this.deleteTarea(codigo);
+    const handleDelete = async (taskId: number): Promise<void> => {
+      await this.deleteTarea(taskId);
       await this.loadTareasData();
     };
 
@@ -128,17 +128,18 @@ export default class AppTareasSharepointWebPart extends BaseClientSideWebPart<IA
       pages: [
         {
           header: {
-            description: "Configuración de la web part",
+            description: "Configuración",
           },
           groups: [
             {
-              groupName: "Opciones",
+              groupName: "Opciones generales",
               groupFields: [
                 PropertyPaneTextField("title", {
                   label: "Título",
-                  placeholder: "Ingrese un título",
                 }),
-                // Agrega más campos de propiedad aquí según tus necesidades
+                PropertyPaneTextField("description", {
+                  label: "Descripción",
+                }),
               ],
             },
           ],

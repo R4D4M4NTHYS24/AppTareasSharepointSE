@@ -29,16 +29,16 @@ const AppTareasSharepoint: React.FC<IAppTareasSharepointProps> = ({
     // Lógica para editar la tarea con el ID "taskId"
   };
 
-  const handleDeleteClick = async (taskId: number): Promise<void> => {
-    //console.log("entre");
+  const handleDeleteClick = async (
+    codigo: number,
+    rowIndex: number
+  ): Promise<void> => {
     const confirmDelete = window.confirm(
       "¿Estás seguro de que deseas eliminar la tarea?"
     );
 
     if (confirmDelete) {
-      console.log("entre2");
-      const codigo =
-        tareaList.find((tarea: ITarea) => tarea.id === taskId)?.Codigo || 0; // Establecer un valor predeterminado para evitar problemas con el tipo
+      console.log("Elemento al que se dio clic:", tareaList[rowIndex]);
       await handleDelete(codigo);
     }
   };
@@ -80,13 +80,16 @@ const AppTareasSharepoint: React.FC<IAppTareasSharepointProps> = ({
         sort: false,
         empty: true,
         customBodyRender: (_: any, tableMeta: any) => {
-          const taskId = tareaList[tableMeta.rowIndex].id;
+          const rowIndex = tableMeta.rowIndex;
+          const tarea = tareaList[rowIndex];
           return (
             <>
-              <IconButton onClick={() => handleEdit(taskId)}>
+              <IconButton onClick={() => handleEdit(tarea.id)}>
                 <EditIcon />
               </IconButton>
-              <IconButton onClick={() => handleDeleteClick(taskId)}>
+              <IconButton
+                onClick={() => handleDeleteClick(tarea.Codigo, rowIndex)}
+              >
                 <DeleteIcon />
               </IconButton>
             </>
@@ -116,7 +119,7 @@ const AppTareasSharepoint: React.FC<IAppTareasSharepointProps> = ({
               color="primary"
               style={{ backgroundColor: "white", color: "black" }}
             >
-              Agregar+
+              Agregar Tarea
             </Button>
           </div>
         }

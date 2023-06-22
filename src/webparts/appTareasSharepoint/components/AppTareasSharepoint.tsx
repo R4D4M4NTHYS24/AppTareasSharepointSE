@@ -5,7 +5,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import MUIDataTable, { MUIDataTableOptions } from "mui-datatables";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import React from "react";
-import { IAppTareasSharepointProps } from "./IAppTareasSharepointProps";
 
 const darkTheme = createTheme({
   palette: {
@@ -19,6 +18,11 @@ export interface ITarea {
   Codigo: number;
   Estado: string;
   Descripcion: string;
+}
+
+export interface IAppTareasSharepointProps {
+  tareaList: ITarea[];
+  handleDelete: (taskId: number) => Promise<void>;
 }
 
 const AppTareasSharepoint: React.FC<IAppTareasSharepointProps> = ({
@@ -38,8 +42,10 @@ const AppTareasSharepoint: React.FC<IAppTareasSharepointProps> = ({
     );
 
     if (confirmDelete) {
-      console.log("Elemento al que se dio clic:", tareaList[rowIndex]);
-      await handleDelete(codigo);
+      const tarea = tareaList.find((t) => t.Codigo === codigo);
+      if (tarea) {
+        await handleDelete(tarea.Codigo);
+      }
     }
   };
 

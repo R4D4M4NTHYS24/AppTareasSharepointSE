@@ -64,10 +64,11 @@ export default class AppTareasSharepointWebPart extends BaseClientSideWebPart<IA
     }
   }
 
-  private async deleteTarea(taskId: number): Promise<void> {
+  private async deleteTarea(codigo: number): Promise<void> {
     try {
       const digest = await this.getRequestDigest();
-      const apiUrl = `https://secol.sharepoint.com/sites/AppTareasSharepoint/_api/web/lists/getbytitle('Tarea')/items?$filter=Id eq '${taskId}'`;
+      const apiUrl = `https://secol.sharepoint.com/sites/AppTareasSharepoint/_api/web/lists/getbytitle('Tarea')/items?$filter=Codigo eq ${codigo}`;
+      console.log(apiUrl);
 
       const response = await fetch(apiUrl, {
         method: "GET",
@@ -79,6 +80,7 @@ export default class AppTareasSharepointWebPart extends BaseClientSideWebPart<IA
 
       if (response.ok) {
         const data = await response.json();
+
         const itemId = data.value[0].Id;
 
         const deleteUrl = `https://secol.sharepoint.com/sites/AppTareasSharepoint/_api/web/lists/getbytitle('Tarea')/items(${itemId})`;
@@ -94,6 +96,7 @@ export default class AppTareasSharepointWebPart extends BaseClientSideWebPart<IA
 
         if (deleteResponse.ok) {
           console.log("Tarea eliminada correctamente");
+          await this.loadTareasData(); // Cargar datos actualizados
         } else {
           console.log("Error al eliminar la tarea");
         }
@@ -108,8 +111,8 @@ export default class AppTareasSharepointWebPart extends BaseClientSideWebPart<IA
   private async renderComponent(): Promise<void> {
     const tareaList = await this.loadTareasData();
 
-    const handleDelete = async (taskId: number): Promise<void> => {
-      await this.deleteTarea(taskId);
+    const handleDelete = async (codigo: number): Promise<void> => {
+      await this.deleteTarea(codigo);
       await this.loadTareasData();
     };
 
@@ -128,18 +131,17 @@ export default class AppTareasSharepointWebPart extends BaseClientSideWebPart<IA
       pages: [
         {
           header: {
-            description: "Configuración",
+            description: "Configuración de la web part",
           },
           groups: [
             {
-              groupName: "Opciones generales",
+              groupName: "Opciones",
               groupFields: [
                 PropertyPaneTextField("title", {
                   label: "Título",
+                  placeholder: "Ingrese un título",
                 }),
-                PropertyPaneTextField("description", {
-                  label: "Descripción",
-                }),
+                // Agrega más campos de propiedad aquí según tus necesidades
               ],
             },
           ],

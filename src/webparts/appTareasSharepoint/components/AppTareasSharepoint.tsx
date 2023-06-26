@@ -5,6 +5,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import MUIDataTable, { MUIDataTableOptions } from "mui-datatables";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import React from "react";
+import { IAppTareasSharepointProps } from "./IAppTareasSharepointProps";
 
 const darkTheme = createTheme({
   palette: {
@@ -13,39 +14,30 @@ const darkTheme = createTheme({
 });
 
 export interface ITarea {
-  id: number;
+  Id: number;
   Title: string;
   Codigo: number;
   Estado: string;
   Descripcion: string;
 }
 
-export interface IAppTareasSharepointProps {
-  tareaList: ITarea[];
-  handleDelete: (taskId: number) => Promise<void>;
-}
-
 const AppTareasSharepoint: React.FC<IAppTareasSharepointProps> = ({
   tareaList,
   handleDelete,
 }) => {
-  const handleEdit = (taskId: number): void => {
-    // Lógica para editar la tarea con el ID "taskId"
+  const handleEdit = (itemId: number): void => {
+    // Lógica para editar la tarea con el ID "itemId"
   };
 
-  const handleDeleteClick = async (
-    codigo: number,
-    rowIndex: number
-  ): Promise<void> => {
+  const handleDeleteClick = async (rowIndex: number): Promise<void> => {
     const confirmDelete = window.confirm(
       "¿Estás seguro de que deseas eliminar la tarea?"
     );
 
     if (confirmDelete) {
-      const tarea = tareaList.find((t) => t.Codigo === codigo);
-      if (tarea) {
-        await handleDelete(tarea.Codigo);
-      }
+      const tarea = rowIndex;
+      //console.log(tarea);
+      await handleDelete(tarea);
     }
   };
 
@@ -90,12 +82,10 @@ const AppTareasSharepoint: React.FC<IAppTareasSharepointProps> = ({
           const tarea = tareaList[rowIndex];
           return (
             <>
-              <IconButton onClick={() => handleEdit(tarea.id)}>
+              <IconButton onClick={() => handleEdit(tarea.Id)}>
                 <EditIcon />
               </IconButton>
-              <IconButton
-                onClick={() => handleDeleteClick(tarea.Codigo, rowIndex)}
-              >
+              <IconButton onClick={() => handleDeleteClick(rowIndex)}>
                 <DeleteIcon />
               </IconButton>
             </>
@@ -119,7 +109,6 @@ const AppTareasSharepoint: React.FC<IAppTareasSharepointProps> = ({
       <MUIDataTable
         title={
           <div style={{ display: "flex", alignItems: "center" }}>
-            <h2 style={{ marginRight: "16px" }}>Lista de Tareas</h2>
             <Button
               variant="contained"
               color="primary"

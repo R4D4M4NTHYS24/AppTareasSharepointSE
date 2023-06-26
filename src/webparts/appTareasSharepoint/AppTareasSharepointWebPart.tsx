@@ -14,9 +14,10 @@ export interface IAppTareasSharepointWebPartProps {
 
 export default class AppTareasSharepointWebPart extends BaseClientSideWebPart<IAppTareasSharepointWebPartProps> {
   private rootElement: HTMLElement;
+  private tareaList: ITarea[]; // Declarar tareaList como propiedad de la clase
 
   public async render(): Promise<void> {
-    this.renderComponent();
+    await this.renderComponent();
   }
 
   public onDispose(): void {
@@ -24,9 +25,9 @@ export default class AppTareasSharepointWebPart extends BaseClientSideWebPart<IA
     this.rootElement.remove();
   }
 
-  private async loadTareasData(): Promise<ITarea[]> {
+  private async loadTareasData(): Promise<void> {
     const response = await fetch(
-      "https://secol.sharepoint.com/sites/AppTareasSharepoint/_api/web/lists/getbytitle('Tarea')/items?$select=Title,Codigo,Estado,Descripcion",
+      "https://secol.sharepoint.com/sites/AppTareasSharepoint/_api/web/lists/getbytitle('Tarea')/items",
       {
         headers: {
           Accept: "application/json",
@@ -34,9 +35,9 @@ export default class AppTareasSharepointWebPart extends BaseClientSideWebPart<IA
       }
     );
     const data = await response.json();
-    const tareaList = data.value;
 
-    return tareaList;
+    this.tareaList = data.value; // Asignar el valor a la propiedad tareaList
+    //console.log(this.tareaList[1].Id);
   }
 
   private async getRequestDigest(): Promise<string> {
@@ -64,44 +65,27 @@ export default class AppTareasSharepointWebPart extends BaseClientSideWebPart<IA
     }
   }
 
-  private async deleteTarea(codigo: number): Promise<void> {
+  private async deleteTarea(itemId: number): Promise<void> {
+    console.log(this.tareaList);
+    const indexItem = this.tareaList[itemId].Id;
+    console.log(indexItem);
     try {
       const digest = await this.getRequestDigest();
-      const apiUrl = `https://secol.sharepoint.com/sites/AppTareasSharepoint/_api/web/lists/getbytitle('Tarea')/items?$filter=Codigo eq ${codigo}`;
-      console.log(apiUrl);
+      const deleteUrl = `https://secol.sharepoint.com/sites/AppTareasSharepoint/_api/web/lists/getbytitle('Tarea')/items(${indexItem})`;
 
-      const response = await fetch(apiUrl, {
-        method: "GET",
+      const response = await fetch(deleteUrl, {
+        method: "POST",
         headers: {
-          Accept: "application/json;odata=nometadata",
-          "Content-Type": "application/json;odata=nometadata",
+          "X-RequestDigest": digest,
+          "IF-MATCH": "*",
+          "X-HTTP-Method": "DELETE",
         },
       });
 
       if (response.ok) {
-        const data = await response.json();
-
-        const itemId = data.value[0].Id;
-
-        const deleteUrl = `https://secol.sharepoint.com/sites/AppTareasSharepoint/_api/web/lists/getbytitle('Tarea')/items(${itemId})`;
-
-        const deleteResponse = await fetch(deleteUrl, {
-          method: "POST",
-          headers: {
-            "X-RequestDigest": digest,
-            "IF-MATCH": "*",
-            "X-HTTP-Method": "DELETE",
-          },
-        });
-
-        if (deleteResponse.ok) {
-          console.log("Tarea eliminada correctamente");
-          await this.loadTareasData(); // Cargar datos actualizados
-        } else {
-          console.log("Error al eliminar la tarea");
-        }
+        console.log("Tarea eliminada correctamente");
       } else {
-        console.log("Error al obtener el elemento de la lista");
+        console.log("Error al eliminar la tarea");
       }
     } catch (error) {
       console.log(error);
@@ -109,15 +93,16 @@ export default class AppTareasSharepointWebPart extends BaseClientSideWebPart<IA
   }
 
   private async renderComponent(): Promise<void> {
-    const tareaList = await this.loadTareasData();
+    await this.loadTareasData();
 
-    const handleDelete = async (codigo: number): Promise<void> => {
-      await this.deleteTarea(codigo);
+    const handleDelete = async (itemId: number): Promise<void> => {
+      await this.deleteTarea(itemId);
+      console.log(itemId);
       await this.loadTareasData();
     };
 
     const element = React.createElement(AppTareasSharepoint, {
-      tareaList: tareaList,
+      tareaList: this.tareaList,
       handleDelete: handleDelete,
     });
 
